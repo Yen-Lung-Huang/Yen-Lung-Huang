@@ -5,8 +5,9 @@
   </a>
 </div>
 
-<div style="display: flex; justify-content: center;">
+<div style="display: flex; justify-content: space-between;">
   <a href="https://git.io/streak-stats">
-    <img src="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=170" alt="GitHub Streak" />
+    <img src="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" alt="GitHub Streak" />
   </a>
+  <img src="http://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=default&utcOffset=8" alt="Productive Time" style="width: 316px;" />
 </div>
