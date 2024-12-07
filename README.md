@@ -4,7 +4,7 @@
   <img src="https://github-readme-stats.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&include_all_commits=true&rank_icon=github" alt="Yen-Lung-Huang's GitHub Stats" style="height: 200px; max-width: 100%;" onerror="this.onerror=null; this.src='https://github-readme-stats.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&rank_icon=github';" />
   
   <!-- Top Languages Card -->
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&langs_count=8" alt="Top Langs" style="height: 200px; max-width: 100%;" />
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,123175,5B2749,FFD700&hide_border=true&langs_count=8" alt="Top Langs" style="height: 200px; max-width: 100%;" />
 </div>
 
 <!-- GitHub Streak and Productive Time -->
