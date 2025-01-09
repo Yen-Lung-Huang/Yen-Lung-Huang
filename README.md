@@ -9,11 +9,8 @@
 
 <!-- GitHub Streak and Productive Time -->
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
-  <!-- GitHub Streak with Fallback -->
-  <picture>
-    <source srcset="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" media="(min-width: 200px)" />
-    <img src="https://media.giphy.com/media/Q8UE4HzFVXJ0q1qyxf/giphy.gif" alt="GitHub Streak" style="max-width: 100%; height: 186px;" />
-  </picture>
+  <!-- GitHub Streak -->
+  <img src="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" alt="GitHub Streak" style="max-width: 100%;" />
   
   <!-- Productive Time -->
   <img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark" alt="Productive Time" style="width: 316px; max-width: 100%;" />
