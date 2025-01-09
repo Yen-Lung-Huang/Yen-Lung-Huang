@@ -12,7 +12,7 @@
   <!-- GitHub Streak with Fallback -->
   <picture>
     <source srcset="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" media="(min-width: 200px)" />
-    <img src="https://i.giphy.com/faQ96sLh7nH5P91OLn.webp" alt="GitHub Streak" style="max-width: 100%; height: 186px;" />
+    <img src="https://media.giphy.com/media/Q8UE4HzFVXJ0q1qyxf/giphy.gif" alt="GitHub Streak" style="max-width: 100%; height: 186px;" />
   </picture>
   
   <!-- Productive Time -->
