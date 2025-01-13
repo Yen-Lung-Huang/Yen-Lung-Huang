@@ -9,8 +9,12 @@
 
 <!-- GitHub Streak and Productive Time -->
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
-  <!-- GitHub Streak -->
-  <img src="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" alt="GitHub Streak" style="max-width: 100%;" />
+  <!-- GitHub Streak with lazy loading -->
+  <img loading="lazy" 
+       src="https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" 
+       alt="GitHub Streak" 
+       style="max-width: 100%;" 
+       onerror="this.src='https://github-readme-streak-stats.herokuapp.com?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186'" />
   
   <!-- Productive Time -->
   <img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark" alt="Productive Time" style="width: 316px; max-width: 100%;" />
