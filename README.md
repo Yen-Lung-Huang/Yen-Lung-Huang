@@ -13,5 +13,5 @@
   <img src="https://github-readme-streak-stats-nu-mocha.vercel.app?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" style="max-width: 100%;" />
   
   <!-- Productive Time -->
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark" style="width: 316px; max-width: 100%;" />
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8" style="width: 316px; max-width: 100%;" />
 </div>
