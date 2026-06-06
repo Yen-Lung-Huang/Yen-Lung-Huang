@@ -2,7 +2,7 @@
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
   <!-- GitHub Stats Card -->
   <a href="https://github.com/Yen-Lung-Huang/github-readme-stats">
-    <img alt="GitHub Stats" src="https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&amp;show_icons=true&amp;theme=radical&amp;title_color=56d364&amp;ring_color=FF2D55&amp;include_all_commits=true&amp;count_private=true&amp;rank_icon=github&amp;cache_seconds=86400" style="height: 200px; max-width: 100%;" />
+    <img alt="GitHub Stats" src="https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&amp;show_icons=true&amp;theme=radical&amp;title_color=7ee787&amp;ring_color=f85149&amp;include_all_commits=true&amp;count_private=true&amp;rank_icon=github&amp;cache_seconds=86400" style="height: 200px; max-width: 100%;" />
   </a>
   
   <!-- Top Languages Card -->
@@ -15,7 +15,7 @@
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
   <!-- GitHub Streak -->
   <a href="https://github.com/Yen-Lung-Huang/github-readme-streak-stats">
-    <img alt="GitHub Streak" src="https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&amp;theme=dark&amp;ring=FFB000&amp;fire=FF2D55&amp;currStreakLabel=FFB000&amp;card_width=478&amp;card_height=186" style="max-width: 100%;" />
+    <img alt="GitHub Streak" src="https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&amp;theme=dark&amp;ring=f2cc60&amp;fire=ff7b72&amp;currStreakLabel=f2cc60&amp;card_width=478&amp;card_height=186" style="max-width: 100%;" />
   </a>
   
   <!-- Productive Time -->
