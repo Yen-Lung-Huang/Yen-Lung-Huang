@@ -2,7 +2,7 @@
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
   <!-- GitHub Stats Card -->
   <a href="https://github.com/Yen-Lung-Huang/github-readme-stats">
-    <img alt="GitHub Stats" src="https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&amp;show_icons=true&amp;theme=radical&amp;title_color=39FF14&amp;ring_color=39FF14&amp;include_all_commits=true&amp;count_private=true&amp;rank_icon=github&amp;cache_seconds=86400" style="height: 200px; max-width: 100%;" />
+    <img alt="GitHub Stats" src="https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&amp;show_icons=true&amp;theme=radical&amp;title_color=0FFF50&amp;ring_color=0FFF50&amp;include_all_commits=true&amp;count_private=true&amp;rank_icon=github&amp;cache_seconds=86400" style="height: 200px; max-width: 100%;" />
   </a>
   
   <!-- Top Languages Card -->
