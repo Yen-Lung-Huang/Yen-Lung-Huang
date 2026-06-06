@@ -10,8 +10,8 @@
 <!-- GitHub Streak and Productive Time -->
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
   <!-- GitHub Streak -->
-  <img src="https://github-readme-streak-stats-nu-mocha.vercel.app?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" style="max-width: 100%;" />
+  <img src="https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&card_width=478&card_height=186" style="max-width: 100%;" />
   
   <!-- Productive Time -->
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8" style="width: 316px; max-width: 100%;" />
+  <img src="https://github-profile-summary-cards-yen-lu.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8" style="width: 316px; max-width: 100%;" />
 </div>
