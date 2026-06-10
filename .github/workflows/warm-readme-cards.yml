@@ -1,0 +1,44 @@
+name: Warm README cards
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Warm self-hosted card endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          urls=(
+            "https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&title_color=39FF14&ring_color=FF2D55&include_all_commits=true&count_private=true&rank_icon=github&cache_seconds=86400"
+            "https://github-readme-stats-yen-lung-huang.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,0D1B2A,1B263B,415A77&langs_count=8&cache_seconds=86400"
+            "https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&ring=FFB000&fire=FF2D55&currStreakLabel=FFB000&card_width=478&card_height=186"
+            "https://github-profile-summary-cards-yen-lu.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8"
+          )
+
+          for url in "${urls[@]}"; do
+            echo "::group::$url"
+            curl \
+              --fail \
+              --location \
+              --silent \
+              --show-error \
+              --retry 3 \
+              --retry-all-errors \
+              --retry-delay 5 \
+              --max-time 25 \
+              --output /tmp/readme-card.svg \
+              --write-out "status=%{http_code} content_type=%{content_type} time=%{time_total}s size=%{size_download}\n" \
+              "$url"
+            grep -q "<svg" /tmp/readme-card.svg
+            echo "::endgroup::"
+          done
