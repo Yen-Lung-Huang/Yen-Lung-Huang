@@ -1,4 +1,4 @@
-name: Warm README cards
+name: Refresh README cards
 
 on:
   schedule:
@@ -6,26 +6,33 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  warm:
+  refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Warm self-hosted card endpoints
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Refresh card SVG cache
         shell: bash
         run: |
           set -euo pipefail
 
-          urls=(
-            "https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&title_color=39FF14&ring_color=FF2D55&include_all_commits=true&count_private=true&rank_icon=github&cache_seconds=86400"
-            "https://github-readme-stats-yen-lung-huang.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,0D1B2A,1B263B,415A77&langs_count=8&cache_seconds=86400"
-            "https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&ring=FFB000&fire=FF2D55&currStreakLabel=FFB000&card_width=478&card_height=186"
-            "https://github-profile-summary-cards-yen-lu.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8"
+          mkdir -p assets/readme-cards
+
+          cards=(
+            "assets/readme-cards/github-stats.svg|https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&title_color=39FF14&ring_color=FF2D55&include_all_commits=true&count_private=true&rank_icon=github&cache_seconds=86400"
+            "assets/readme-cards/top-languages.svg|https://github-readme-stats-yen-lung-huang.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,0D1B2A,1B263B,415A77&langs_count=8&cache_seconds=86400"
+            "assets/readme-cards/streak.svg|https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&ring=FFB000&fire=FF2D55&currStreakLabel=FFB000&card_width=478&card_height=186"
+            "assets/readme-cards/productive-time.svg|https://github-profile-summary-cards-yen-lu.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8"
           )
 
-          for url in "${urls[@]}"; do
+          for card in "${cards[@]}"; do
+            file="${card%%|*}"
+            url="${card#*|}"
             echo "::group::$url"
             curl \
               --fail \
@@ -36,9 +43,29 @@ jobs:
               --retry-all-errors \
               --retry-delay 5 \
               --max-time 25 \
-              --output /tmp/readme-card.svg \
+              --output "$file" \
               --write-out "status=%{http_code} content_type=%{content_type} time=%{time_total}s size=%{size_download}\n" \
               "$url"
-            grep -q "<svg" /tmp/readme-card.svg
+            grep -q "<svg" "$file"
+            if grep -Eiq "ERROR|Bad credentials|No more GITHUB_TOKEN|API rate limit" "$file"; then
+              echo "Refusing to commit an error card: $file" >&2
+              exit 1
+            fi
             echo "::endgroup::"
           done
+
+      - name: Commit refreshed SVG cache
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git add assets/readme-cards/*.svg
+          if git diff --cached --quiet; then
+            echo "No card changes."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh README card cache [skip ci]"
+          git push
