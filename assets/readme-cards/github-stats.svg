@@ -9,7 +9,7 @@
         aria-labelledby="descId"
       >
         <title id="titleId">Yen-Lung-Huang's GitHub Stats, Rank: C+</title>
-        <desc id="descId">Total Stars Earned: 16, Total Commits  : 1660, Total PRs: 2, Total Issues: 8, Contributed to (last year): 0</desc>
+        <desc id="descId">Total Stars Earned: 16, Total Commits  : 1661, Total PRs: 2, Total Issues: 8, Contributed to (last year): 0</desc>
         <style>
           .header {
             font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
@@ -73,7 +73,7 @@
         stroke-dashoffset: 251.32741228718345;
       }
       to {
-        stroke-dashoffset: 188.64669175274315;
+        stroke-dashoffset: 188.63750728969413;
       }
     }
   
