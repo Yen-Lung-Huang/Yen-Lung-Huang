@@ -2,16 +2,24 @@ name: Refresh README cards
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "7,22,37,52 * * * *"
+  push:
+    paths:
+      - ".github/workflows/warm-readme-cards.yml"
+      - "README.md"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: readme-card-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,35 +32,56 @@ jobs:
           mkdir -p assets/readme-cards
 
           cards=(
-            "assets/readme-cards/github-stats.svg|https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&title_color=39FF14&ring_color=FF2D55&include_all_commits=true&count_private=true&rank_icon=github&cache_seconds=86400"
-            "assets/readme-cards/top-languages.svg|https://github-readme-stats-yen-lung-huang.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,0D1B2A,1B263B,415A77&langs_count=8&cache_seconds=86400"
+            "assets/readme-cards/github-stats.svg|https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&title_color=39FF14&ring_color=FF2D55&include_all_commits=true&count_private=true&rank_icon=github&cache_seconds=900"
+            "assets/readme-cards/top-languages.svg|https://github-readme-stats-yen-lung-huang.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,0D1B2A,1B263B,415A77&langs_count=8&cache_seconds=900"
             "assets/readme-cards/streak.svg|https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&ring=FFB000&fire=FF2D55&currStreakLabel=FFB000&card_width=478&card_height=186"
             "assets/readme-cards/productive-time.svg|https://github-profile-summary-cards-yen-lu.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8"
           )
 
+          refreshed=0
           for card in "${cards[@]}"; do
             file="${card%%|*}"
             url="${card#*|}"
+            tmp_file="$(mktemp)"
             echo "::group::$url"
-            curl \
+            if ! curl \
               --fail \
               --location \
               --silent \
               --show-error \
-              --retry 3 \
+              --retry 5 \
               --retry-all-errors \
               --retry-delay 5 \
-              --max-time 25 \
-              --output "$file" \
+              --connect-timeout 15 \
+              --max-time 60 \
+              --output "$tmp_file" \
               --write-out "status=%{http_code} content_type=%{content_type} time=%{time_total}s size=%{size_download}\n" \
-              "$url"
-            grep -q "<svg" "$file"
-            if grep -Eiq "ERROR|Bad credentials|No more GITHUB_TOKEN|API rate limit" "$file"; then
-              echo "Refusing to commit an error card: $file" >&2
-              exit 1
+              "$url"; then
+              echo "::warning::Keeping previous card because download failed: $file"
+              rm -f "$tmp_file"
+              echo "::endgroup::"
+              continue
             fi
+            if ! grep -q "<svg" "$tmp_file"; then
+              echo "::warning::Keeping previous card because response was not SVG: $file"
+              rm -f "$tmp_file"
+              echo "::endgroup::"
+              continue
+            fi
+            if grep -Eiq "ERROR|Bad credentials|No more GITHUB_TOKEN|API rate limit" "$tmp_file"; then
+              echo "::warning::Keeping previous card because endpoint returned an error card: $file"
+              rm -f "$tmp_file"
+              echo "::endgroup::"
+              continue
+            fi
+            mv "$tmp_file" "$file"
+            refreshed=$((refreshed + 1))
             echo "::endgroup::"
           done
+          if [ "$refreshed" -eq 0 ]; then
+            echo "No cards refreshed successfully." >&2
+            exit 1
+          fi
 
       - name: Commit refreshed SVG cache
         shell: bash
@@ -68,4 +97,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Refresh README card cache [skip ci]"
+          git pull --rebase origin "$GITHUB_REF_NAME"
           git push
