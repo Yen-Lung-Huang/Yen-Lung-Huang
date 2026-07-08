@@ -83,12 +83,18 @@ jobs:
             exit 1
           fi
 
+          streak_hash="$(sha256sum assets/readme-cards/streak.svg | cut -c1-12)"
+          streak_file="assets/readme-cards/streak-${streak_hash}.svg"
+          cp assets/readme-cards/streak.svg "$streak_file"
+          find assets/readme-cards -maxdepth 1 -type f -name 'streak-*.svg' ! -name "streak-${streak_hash}.svg" -delete
+          perl -0pi -e "s#src=\"assets/readme-cards/streak-[^\"]+\\.svg\"#src=\"${streak_file}\"#g" README.md
+
       - name: Commit refreshed SVG cache
         shell: bash
         run: |
           set -euo pipefail
 
-          git add assets/readme-cards/*.svg
+          git add README.md assets/readme-cards
           if git diff --cached --quiet; then
             echo "No card changes."
             exit 0

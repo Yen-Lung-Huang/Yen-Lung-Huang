@@ -15,7 +15,7 @@
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
   <!-- GitHub Streak -->
   <a href="https://github.com/Yen-Lung-Huang/github-readme-streak-stats">
-    <img alt="GitHub Streak" src="assets/readme-cards/streak.svg" style="max-width: 100%;" />
+    <img alt="GitHub Streak" src="assets/readme-cards/streak-3a8ecd8fa0f1.svg" style="max-width: 100%;" />
   </a>
   
   <!-- Productive Time -->
