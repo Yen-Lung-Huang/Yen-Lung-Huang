@@ -7,7 +7,9 @@ name: Keep README cards warm
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    # every 5 min to match the cards' 300s cache TTL, so this job (not a real
+    # visitor) is the one that triggers the slow camo re-fetch after expiry
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions: {}
