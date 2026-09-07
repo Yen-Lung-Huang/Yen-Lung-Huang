@@ -5,7 +5,14 @@
   from { transform: scaleY(0); }
   to { transform: scaleY(1); }
 }
+@keyframes readme-labels-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 @media (prefers-reduced-motion: no-preference) {
+  text, path.domain, line {
+    animation: readme-labels-fade 1s ease-out 0.6s 1 backwards;
+  }
   rect.bar {
     transform-box: fill-box;
     transform-origin: center bottom;

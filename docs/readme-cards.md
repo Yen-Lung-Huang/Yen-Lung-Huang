@@ -30,6 +30,8 @@ after a 0.6-second delay, after each
 successful download. Its static geometry and colors remain unchanged. Reduced
 motion users see the full chart immediately. Animation decoration is idempotent;
 unexpected upstream bar structure retains the previous snapshot.
+The title, axis paths, tick marks, tick labels and footer fade in on the same
+timeline as the bars. The background remains visible throughout.
 The README includes a presentation version query to avoid reusing the earlier
 non-animated image URL. The delay improves visibility but cannot synchronize
 separate images or restart an animation on viewport entry.
