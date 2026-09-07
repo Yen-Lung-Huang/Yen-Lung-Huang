@@ -1,0 +1,48 @@
+name: Refresh README cards
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/refresh_readme_cards.py
+      - tests/test_readme_cards.py
+      - .github/workflows/refresh-readme-cards.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: readme-card-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test validation and fallback
+        run: python -m unittest discover -s tests -v
+      - name: Refresh independently and retain last good images
+        id: refresh
+        continue-on-error: true
+        run: python scripts/refresh_readme_cards.py
+      - name: Publish successful updates
+        run: |
+          git add assets/readme-cards/github-stats.svg assets/readme-cards/top-languages.svg assets/readme-cards/streak.svg assets/readme-cards/productive-time.svg
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Refresh validated README cards [skip ci]'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Report refresh failures without removing cached images
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo 'One or more cards could not be refreshed. See refresh logs; existing images were preserved.'
+          exit 1
