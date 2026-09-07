@@ -25,6 +25,16 @@ when needed. GitHub hosting outages are outside this mechanism's protection.
 
 ## Local verification
 
+Productive Time receives a one-shot 0.6-second bar-growth animation after each
+successful download. Its static geometry and colors remain unchanged. Reduced
+motion users see the full chart immediately. Animation decoration is idempotent;
+unexpected upstream bar structure retains the previous snapshot.
+
+Separate README images have independent load/animation timelines. Equal CSS
+delays cannot guarantee simultaneous starts. A single composed SVG with embedded
+card geometry and scoped CSS could share one timeline, but would change the
+current independent links and responsive layout; it is not implemented here.
+
 ```sh
 python -m unittest discover -s tests -v
 python scripts/refresh_readme_cards.py

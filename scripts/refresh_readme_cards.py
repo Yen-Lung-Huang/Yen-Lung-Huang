@@ -46,6 +46,34 @@ def validate(data, expected):
             raise ValueError('SVG event handlers are not allowed')
 
 
+def animate_productive_time(data):
+    """Decorate the saved SVG without changing data, colors, or static geometry."""
+    root = ET.fromstring(data)
+    bars = [e for e in root.iter(SVG + 'rect') if 'bar' in e.get('class', '').split()]
+    if not bars:
+        raise ValueError('Productive Time bar structure changed')
+    for old in list(root):
+        if old.get('id') == 'readme-bar-animation':
+            root.remove(old)
+    style = ET.SubElement(root, SVG + 'style', {'id': 'readme-bar-animation'})
+    # Static geometry remains visible when animation is unsupported or disabled.
+    style.text = '''
+@keyframes readme-bars-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  rect.bar {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: readme-bars-grow 0.6s ease-out 0.15s 1 backwards;
+  }
+}
+'''
+    ET.register_namespace('', SVG[1:-1])
+    return ET.tostring(root, encoding='utf-8')
+
+
 def download(url):
     request = Request(url, headers={'User-Agent': 'readme-card-refresh', 'Accept': 'image/svg+xml'})
     with urlopen(request, timeout=30) as response:
@@ -61,6 +89,9 @@ def refresh(path, url, expected, fetch=download, sleep=time.sleep):
         try:
             data = fetch(url)
             validate(data, expected)
+            if path.stem == 'productive-time':
+                data = animate_productive_time(data)
+                validate(data, expected)
             if path.exists() and path.read_bytes() == data:
                 return True
             path.parent.mkdir(parents=True, exist_ok=True)

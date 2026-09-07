@@ -3,7 +3,9 @@ import tempfile
 import unittest
 from unittest.mock import Mock
 
-from scripts.refresh_readme_cards import CARDS, ROOT, refresh, validate
+import xml.etree.ElementTree as ET
+
+from scripts.refresh_readme_cards import CARDS, ROOT, SVG, animate_productive_time, refresh, validate
 
 GOOD = b'<svg xmlns="http://www.w3.org/2000/svg" width="478" height="186"><text>Current Streak 12</text></svg>'
 
@@ -11,6 +13,35 @@ GOOD = b'<svg xmlns="http://www.w3.org/2000/svg" width="478" height="186"><text>
 class CardTests(unittest.TestCase):
     def test_valid_svg(self):
         validate(GOOD, ('Current Streak',))
+
+    def test_animation_preserves_geometry_and_is_idempotent(self):
+        original = (ROOT / 'assets/readme-cards/productive-time.svg').read_bytes()
+        animated = animate_productive_time(original)
+        validate(animated, ('Commits',))
+        self.assertEqual(animated, animate_productive_time(animated))
+        before = ET.fromstring(original)
+        after = ET.fromstring(animated)
+        self.assertEqual(before.attrib, after.attrib)
+        self.assertEqual([e.attrib for e in before.iter(SVG + 'rect')],
+                         [e.attrib for e in after.iter(SVG + 'rect')])
+        styles = [e for e in after if e.get('id') == 'readme-bar-animation']
+        self.assertEqual(len(styles), 1)
+        self.assertIn('prefers-reduced-motion: no-preference', styles[0].text)
+        self.assertIn('0.6s', styles[0].text)
+
+    def test_animation_is_applied_on_refresh(self):
+        original = (ROOT / 'assets/readme-cards/productive-time.svg').read_bytes()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'productive-time.svg'
+            self.assertTrue(refresh(path, 'unused', ('Commits',), Mock(return_value=original)))
+            self.assertEqual(path.read_bytes(), animate_productive_time(original))
+
+    def test_changed_bar_structure_preserves_last_good(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'productive-time.svg'
+            path.write_bytes(GOOD)
+            self.assertFalse(refresh(path, 'unused', ('Current Streak',), Mock(return_value=GOOD), lambda _: None))
+            self.assertEqual(path.read_bytes(), GOOD)
 
     def test_reject_bad_documents(self):
         for data in (
