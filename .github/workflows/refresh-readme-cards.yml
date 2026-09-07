@@ -34,7 +34,7 @@ jobs:
         run: python scripts/refresh_readme_cards.py
       - name: Publish successful updates
         run: |
-          git add assets/readme-cards/github-stats.svg assets/readme-cards/top-languages.svg assets/readme-cards/streak.svg assets/readme-cards/productive-time.svg
+          git add assets/readme-cards/github-stats.svg assets/readme-cards/top-languages.svg assets/readme-cards/streak.svg assets/readme-cards/productive-time-animated.svg
           if git diff --cached --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

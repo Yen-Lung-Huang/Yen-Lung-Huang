@@ -32,8 +32,10 @@ motion users see the full chart immediately. Animation decoration is idempotent;
 unexpected upstream bar structure retains the previous snapshot.
 The title, axis paths, tick marks, tick labels and footer fade in on the same
 timeline as the bars. The background remains visible throughout.
-The README includes a presentation version query to avoid reusing the earlier
-non-animated image URL. The delay improves visibility but cannot synchronize
+The README uses `productive-time-animated.svg` to avoid the earlier image cache;
+GitHub's raw redirect stripped the former query version. The previous
+`productive-time.svg` is retained for older cached READMEs, but no longer updated.
+The delay improves visibility but cannot synchronize
 separate images or restart an animation on viewport entry.
 
 Separate README images have independent load/animation timelines. Equal CSS

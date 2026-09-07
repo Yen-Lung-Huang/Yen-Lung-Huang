@@ -96,7 +96,7 @@ def refresh(path, url, expected, fetch=download, sleep=time.sleep):
         try:
             data = fetch(url)
             validate(data, expected)
-            if path.stem == 'productive-time':
+            if path.stem in ('productive-time', 'productive-time-animated'):
                 data = animate_productive_time(data)
                 validate(data, expected)
             if path.exists() and path.read_bytes() == data:
@@ -124,7 +124,8 @@ def refresh(path, url, expected, fetch=download, sleep=time.sleep):
 def main():
     failed = []
     for name, (url, expected) in CARDS.items():
-        if not refresh(ROOT / 'assets/readme-cards' / (name + '.svg'), url, expected):
+        filename = 'productive-time-animated.svg' if name == 'productive-time' else name + '.svg'
+        if not refresh(ROOT / 'assets/readme-cards' / filename, url, expected):
             failed.append(name)
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as file:

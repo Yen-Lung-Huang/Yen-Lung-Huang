@@ -35,7 +35,7 @@ class CardTests(unittest.TestCase):
     def test_animation_is_applied_on_refresh(self):
         original = (ROOT / 'assets/readme-cards/productive-time.svg').read_bytes()
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'productive-time.svg'
+            path = Path(directory) / 'productive-time-animated.svg'
             self.assertTrue(refresh(path, 'unused', ('Commits',), Mock(return_value=original)))
             self.assertEqual(path.read_bytes(), animate_productive_time(original))
 
@@ -89,7 +89,8 @@ class CardTests(unittest.TestCase):
     def test_committed_fallbacks_are_valid(self):
         for name, (_, labels) in CARDS.items():
             with self.subTest(card=name):
-                validate((ROOT / 'assets/readme-cards' / (name + '.svg')).read_bytes(), labels)
+                filename = 'productive-time-animated.svg' if name == 'productive-time' else name + '.svg'
+                validate((ROOT / 'assets/readme-cards' / filename).read_bytes(), labels)
 
 
 if __name__ == '__main__':
