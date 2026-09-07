@@ -66,7 +66,7 @@ def animate_productive_time(data):
   rect.bar {
     transform-box: fill-box;
     transform-origin: center bottom;
-    animation: readme-bars-grow 0.6s ease-out 0.15s 1 backwards;
+    animation: readme-bars-grow 1s ease-out 0.6s 1 backwards;
   }
 }
 '''

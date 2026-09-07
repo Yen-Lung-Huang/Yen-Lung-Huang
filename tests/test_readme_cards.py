@@ -27,7 +27,7 @@ class CardTests(unittest.TestCase):
         styles = [e for e in after if e.get('id') == 'readme-bar-animation']
         self.assertEqual(len(styles), 1)
         self.assertIn('prefers-reduced-motion: no-preference', styles[0].text)
-        self.assertIn('0.6s', styles[0].text)
+        self.assertIn('1s ease-out 0.6s 1 backwards', styles[0].text)
 
     def test_animation_is_applied_on_refresh(self):
         original = (ROOT / 'assets/readme-cards/productive-time.svg').read_bytes()

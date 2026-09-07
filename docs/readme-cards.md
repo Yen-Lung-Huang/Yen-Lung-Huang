@@ -25,10 +25,14 @@ when needed. GitHub hosting outages are outside this mechanism's protection.
 
 ## Local verification
 
-Productive Time receives a one-shot 0.6-second bar-growth animation after each
+Productive Time receives a one-shot 1-second bar-growth animation, starting
+after a 0.6-second delay, after each
 successful download. Its static geometry and colors remain unchanged. Reduced
 motion users see the full chart immediately. Animation decoration is idempotent;
 unexpected upstream bar structure retains the previous snapshot.
+The README includes a presentation version query to avoid reusing the earlier
+non-animated image URL. The delay improves visibility but cannot synchronize
+separate images or restart an animation on viewport entry.
 
 Separate README images have independent load/animation timelines. Equal CSS
 delays cannot guarantee simultaneous starts. A single composed SVG with embedded
