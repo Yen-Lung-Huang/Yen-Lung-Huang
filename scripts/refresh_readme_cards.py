@@ -68,12 +68,12 @@ def animate_productive_time(data):
 }
 @media (prefers-reduced-motion: no-preference) {
   text, path.domain, line {
-    animation: readme-labels-fade 1s ease-out 0.6s 1 backwards;
+    animation: readme-labels-fade 0.6s ease-out 0.3s 1 backwards;
   }
   rect.bar {
     transform-box: fill-box;
     transform-origin: center bottom;
-    animation: readme-bars-grow 1s ease-out 0.6s 1 backwards;
+    animation: readme-bars-grow 0.6s ease-out 0.3s 1 backwards;
   }
 }
 '''
@@ -96,7 +96,7 @@ def refresh(path, url, expected, fetch=download, sleep=time.sleep):
         try:
             data = fetch(url)
             validate(data, expected)
-            if path.stem in ('productive-time', 'productive-time-animated'):
+            if path.stem in ('productive-time', 'productive-time-animated', 'productive-time-animated-v2'):
                 data = animate_productive_time(data)
                 validate(data, expected)
             if path.exists() and path.read_bytes() == data:
@@ -124,7 +124,7 @@ def refresh(path, url, expected, fetch=download, sleep=time.sleep):
 def main():
     failed = []
     for name, (url, expected) in CARDS.items():
-        filename = 'productive-time-animated.svg' if name == 'productive-time' else name + '.svg'
+        filename = 'productive-time-animated-v2.svg' if name == 'productive-time' else name + '.svg'
         if not refresh(ROOT / 'assets/readme-cards' / filename, url, expected):
             failed.append(name)
     if os.environ.get('GITHUB_STEP_SUMMARY'):

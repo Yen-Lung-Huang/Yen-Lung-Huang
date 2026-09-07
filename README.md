@@ -20,6 +20,6 @@
   
   <!-- Productive Time -->
   <a href="https://github.com/Yen-Lung-Huang/github-profile-summary-cards">
-    <img alt="Productive Time" src="assets/readme-cards/productive-time-animated.svg" style="width: 316px; max-width: 100%;" />
+    <img alt="Productive Time" src="assets/readme-cards/productive-time-animated-v2.svg" style="width: 316px; max-width: 100%;" />
   </a>
 </div>

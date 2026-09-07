@@ -27,15 +27,15 @@ class CardTests(unittest.TestCase):
         styles = [e for e in after if e.get('id') == 'readme-bar-animation']
         self.assertEqual(len(styles), 1)
         self.assertIn('prefers-reduced-motion: no-preference', styles[0].text)
-        self.assertIn('1s ease-out 0.6s 1 backwards', styles[0].text)
+        self.assertIn('0.6s ease-out 0.3s 1 backwards', styles[0].text)
         self.assertIn('text, path.domain, line', styles[0].text)
-        self.assertIn('readme-labels-fade 1s ease-out 0.6s 1 backwards', styles[0].text)
+        self.assertIn('readme-labels-fade 0.6s ease-out 0.3s 1 backwards', styles[0].text)
         self.assertIn('from { opacity: 0; }', styles[0].text)
 
     def test_animation_is_applied_on_refresh(self):
         original = (ROOT / 'assets/readme-cards/productive-time.svg').read_bytes()
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'productive-time-animated.svg'
+            path = Path(directory) / 'productive-time-animated-v2.svg'
             self.assertTrue(refresh(path, 'unused', ('Commits',), Mock(return_value=original)))
             self.assertEqual(path.read_bytes(), animate_productive_time(original))
 
@@ -89,7 +89,7 @@ class CardTests(unittest.TestCase):
     def test_committed_fallbacks_are_valid(self):
         for name, (_, labels) in CARDS.items():
             with self.subTest(card=name):
-                filename = 'productive-time-animated.svg' if name == 'productive-time' else name + '.svg'
+                filename = 'productive-time-animated-v2.svg' if name == 'productive-time' else name + '.svg'
                 validate((ROOT / 'assets/readme-cards' / filename).read_bytes(), labels)
 
 

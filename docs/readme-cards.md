@@ -25,14 +25,14 @@ when needed. GitHub hosting outages are outside this mechanism's protection.
 
 ## Local verification
 
-Productive Time receives a one-shot 1-second bar-growth animation, starting
-after a 0.6-second delay, after each
+Productive Time receives a one-shot 0.6-second bar-growth animation, starting
+after a 0.3-second delay, after each
 successful download. Its static geometry and colors remain unchanged. Reduced
 motion users see the full chart immediately. Animation decoration is idempotent;
 unexpected upstream bar structure retains the previous snapshot.
 The title, axis paths, tick marks, tick labels and footer fade in on the same
 timeline as the bars. The background remains visible throughout.
-The README uses `productive-time-animated.svg` to avoid the earlier image cache;
+The README uses `productive-time-animated-v2.svg` to avoid the earlier image cache;
 GitHub's raw redirect stripped the former query version. The previous
 `productive-time.svg` is retained for older cached READMEs, but no longer updated.
 The delay improves visibility but cannot synchronize
