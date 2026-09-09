@@ -2,7 +2,8 @@ name: Refresh README cards
 
 on:
   schedule:
-    - cron: "17,47 * * * *"
+    # Five-minute cadence, offset from the busy start of each hour.
+    - cron: "2-57/5 * * * *"
   workflow_dispatch:
   push:
     paths:

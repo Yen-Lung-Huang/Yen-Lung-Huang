@@ -6,6 +6,7 @@ import re
 import tempfile
 import time
 from urllib.request import Request, urlopen
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,7 +14,7 @@ SVG = '{http://www.w3.org/2000/svg}'
 CARDS = {
     'github-stats': ('https://github-readme-stats-yen-lung-huang.vercel.app/api?username=Yen-Lung-Huang&show_icons=true&theme=radical&title_color=39FF14&ring_color=FF2D55&include_all_commits=true&count_private=true&rank_icon=github&cache_seconds=900', ('Total Stars', 'Total Commits')),
     'top-languages': ('https://github-readme-stats-yen-lung-huang.vercel.app/api/top-langs/?username=Yen-Lung-Huang&layout=compact&theme=ambient_gradient&bg_color=20,0D1B2A,1B263B,415A77&langs_count=8&cache_seconds=900', ('Most Used Languages',)),
-    'streak': ('https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&ring=FFB000&fire=FF2D55&currStreakLabel=FFB000&card_width=478&card_height=186', ('Total Contributions', 'Current Streak', 'Longest Streak')),
+    'streak': ('https://github-readme-streak-stats-yen-lung.vercel.app?user=Yen-Lung-Huang&theme=dark&ring=FFB000&fire=FF2D55&currStreakLabel=FFB000&card_width=478&card_height=186&timezone=Asia%2FTaipei', ('Total Contributions', 'Current Streak', 'Longest Streak')),
     'productive-time': ('https://github-profile-summary-cards-yen-lu.vercel.app/api/cards/productive-time?username=Yen-Lung-Huang&theme=dark&utcOffset=8', ('Commits',)),
 }
 
@@ -82,7 +83,17 @@ def animate_productive_time(data):
 
 
 def download(url):
-    request = Request(url, headers={'User-Agent': 'readme-card-refresh', 'Accept': 'image/svg+xml'})
+    # Rotate the CDN cache key every five minutes. This cannot bypass an
+    # upstream service's own GitHub data cache.
+    parts = urlsplit(url)
+    query = [(key, value) for key, value in parse_qsl(parts.query, keep_blank_values=True)
+             if key != '_refresh']
+    query.append(('_refresh', str(int(time.time()) // 300)))
+    url = urlunsplit(parts._replace(query=urlencode(query)))
+    request = Request(url, headers={
+        'User-Agent': 'readme-card-refresh', 'Accept': 'image/svg+xml',
+        'Cache-Control': 'no-cache',
+    })
     with urlopen(request, timeout=30) as response:
         if response.status != 200:
             raise ValueError('Unexpected HTTP status')

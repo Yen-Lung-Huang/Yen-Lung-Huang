@@ -1,16 +1,32 @@
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock, patch
+from urllib.parse import parse_qs, urlsplit
 
 import xml.etree.ElementTree as ET
 
-from scripts.refresh_readme_cards import CARDS, ROOT, SVG, animate_productive_time, refresh, validate
+from scripts.refresh_readme_cards import CARDS, ROOT, SVG, animate_productive_time, download, refresh, validate
 
 GOOD = b'<svg xmlns="http://www.w3.org/2000/svg" width="478" height="186"><text>Current Streak 12</text></svg>'
 
 
 class CardTests(unittest.TestCase):
+    def test_download_revalidates_and_preserves_card_options(self):
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.headers.get_content_type.return_value = 'image/svg+xml'
+        response.read.return_value = GOOD
+        with patch('scripts.refresh_readme_cards.urlopen', return_value=response) as fetch, \
+             patch('scripts.refresh_readme_cards.time.time', return_value=600):
+            self.assertEqual(download('https://example.com/?timezone=Asia%2FTaipei&ring=FFB000&_refresh=old'), GOOD)
+        request = fetch.call_args.args[0]
+        self.assertEqual(parse_qs(urlsplit(request.full_url).query), {
+            'timezone': ['Asia/Taipei'], 'ring': ['FFB000'], '_refresh': ['2'],
+        })
+        self.assertEqual(request.get_header('Cache-control'), 'no-cache')
+
     def test_valid_svg(self):
         validate(GOOD, ('Current Streak',))
 
