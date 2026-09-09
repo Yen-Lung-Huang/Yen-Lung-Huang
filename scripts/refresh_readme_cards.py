@@ -1,6 +1,7 @@
 """Refresh public card snapshots; never replace a good image with a failed response."""
 
 import os
+import hashlib
 from pathlib import Path
 import re
 import tempfile
@@ -133,15 +134,42 @@ def refresh(path, url, expected, fetch=download, sleep=time.sleep):
 
 
 def main():
+    try:
+        from scripts.direct_streak import build_card
+    except ModuleNotFoundError:
+        from direct_streak import build_card
     failed = []
     for name, (url, expected) in CARDS.items():
         filename = 'productive-time-animated-v2.svg' if name == 'productive-time' else name + '.svg'
-        if not refresh(ROOT / 'assets/readme-cards' / filename, url, expected):
+        fetch = build_card if name == 'streak' else download
+        if not refresh(ROOT / 'assets/readme-cards' / filename, url, expected, fetch=fetch):
             failed.append(name)
+    publish_versions(ROOT)
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as file:
             file.write('## README cards\n' + ('Failed (cached images retained): ' + ', '.join(failed) if failed else 'All four images validated successfully.') + '\n')
     return bool(failed)
+
+
+def publish_versions(root):
+    """Publish immutable image paths so GitHub cannot reuse an older image URL."""
+    readme = root / 'README.md'
+    content = readme.read_text(encoding='utf-8')
+    for name in CARDS:
+        stem = 'productive-time-animated-v2' if name == 'productive-time' else name
+        directory = root / 'assets/readme-cards'
+        data = (directory / (stem + '.svg')).read_bytes()
+        digest = hashlib.sha256(data).hexdigest()[:16]
+        filename = f'{stem}-{digest}.svg'
+        pattern = rf'assets/readme-cards/{re.escape(stem)}(?:-[0-9a-f]{{16}})?\.svg'
+        content, count = re.subn(pattern, 'assets/readme-cards/' + filename, content)
+        if count != 1:
+            raise ValueError('Expected exactly one README reference for ' + stem)
+        (directory / filename).write_bytes(data)
+        for old in directory.glob(stem + '-*.svg'):
+            if re.fullmatch(re.escape(stem) + r'-[0-9a-f]{16}\.svg', old.name) and old.name != filename:
+                old.unlink()
+    readme.write_text('\n'.join(line.rstrip() for line in content.splitlines()) + '\n', encoding='utf-8', newline='\n')
 
 
 if __name__ == '__main__':
