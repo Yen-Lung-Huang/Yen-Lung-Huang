@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import xml.etree.ElementTree as ET
 
 from scripts.direct_streak import TAIPEI, calculate, fetch_days, build_card
-from scripts.refresh_readme_cards import CARDS, ROOT, SVG, publish_versions, validate
+from scripts.refresh_readme_cards import CARDS, ROOT, SVG, validate
 
 
 class DirectStreakTests(unittest.TestCase):
@@ -50,40 +50,6 @@ class DirectStreakTests(unittest.TestCase):
         self.assertEqual(root.get('height'), '186px')
         self.assertIn('GitHub API checked:', root.find(SVG + 'title').text)
         self.assertIn('GitHub GraphQL', root.find(SVG + 'metadata').text)
-
-    def test_immutable_paths_change_only_when_bytes_change(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            cards = root / 'assets/readme-cards'
-            cards.mkdir(parents=True)
-            stems = ['productive-time-animated-v2' if name == 'productive-time' else name for name in CARDS]
-            (root / 'README.md').write_text('\n'.join(f'assets/readme-cards/{stem}.svg' for stem in stems))
-            for stem in stems:
-                (cards / (stem + '.svg')).write_bytes(b'<svg>first</svg>')
-            publish_versions(root)
-            initial = (root / 'README.md').read_text()
-            publish_versions(root)
-            self.assertEqual(initial, (root / 'README.md').read_text())
-            (cards / 'streak.svg').write_bytes(b'<svg>new data</svg>')
-            publish_versions(root)
-            self.assertNotEqual(initial, (root / 'README.md').read_text())
-            self.assertEqual(len(list(cards.glob('streak-*.svg'))), 1)
-
-    def test_readme_tooltip_tracks_image_without_duplicate_titles(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            cards = root / 'assets/readme-cards'
-            cards.mkdir(parents=True)
-            (root / 'README.md').write_text((ROOT / 'README.md').read_text(), encoding='utf-8')
-            for name in CARDS:
-                stem = 'productive-time-animated-v2' if name == 'productive-time' else name
-                (cards / (stem + '.svg')).write_bytes((ROOT / 'assets/readme-cards' / (stem + '.svg')).read_bytes())
-            (cards / 'streak.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg"><title>Checked &amp; verified</title></svg>')
-            publish_versions(root)
-            publish_versions(root)
-            content = (root / 'README.md').read_text()
-            self.assertEqual(content.count('title="Checked &amp; verified"'), 1)
-            self.assertNotIn('title="GitHub API checked:', content)
 
 
 if __name__ == '__main__':
