@@ -82,12 +82,12 @@ def compose(cards, columns):
     for index, data in enumerate(cards):
         col, row = index % columns, index // columns
         child = scoped_card(data, f'card-{index}')
-        child.tag = SVG + 'g'
-        for attr in ('width', 'height', 'viewBox'):
-            child.attrib.pop(attr, None)
         x, y = sum(widths[:col]) + col * gap, sum(heights[:row]) + row * gap
-        child.set('transform', f'translate({x:g} {y:g}) scale({widths[col] / sizes[index][0]:g} {heights[row] / sizes[index][1]:g})')
-        root.append(child)
+        cell = ET.SubElement(root, SVG + 'g', {
+            'id': f'cell-{index}',
+            'transform': f'translate({x:g} {y:g}) scale({widths[col] / sizes[index][0]:g} {heights[row] / sizes[index][1]:g})',
+        })
+        cell.append(child)
     ET.register_namespace('', SVG[1:-1])
     return ET.tostring(root, encoding='utf-8')
 
