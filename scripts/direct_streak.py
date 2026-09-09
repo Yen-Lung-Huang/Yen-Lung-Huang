@@ -126,16 +126,10 @@ def build_card(_url=None):
     }.items():
         texts[index].text = value
     texts[4].set('font-size', '10px')
-    root.set('height', '206px')
-    root.set('viewBox', '0 0 478 206')
-    ET.SubElement(root, SVG + 'rect', {'x': '0', 'y': '186', 'width': '478',
-                                     'height': '20', 'fill': '#151515'})
     fetched = datetime.now(TAIPEI).isoformat(timespec='seconds')
-    footer = ET.SubElement(root, SVG + 'text', {
-        'x': '239', 'y': '199', 'text-anchor': 'middle', 'fill': '#9E9E9E',
-        'font-family': 'Segoe UI, sans-serif', 'font-size': '10px',
-    })
-    footer.text = 'GitHub API checked: ' + fetched.replace('T', ' ')
+    title = ET.Element(SVG + 'title')
+    title.text = 'GitHub API checked: ' + fetched.replace('T', ' ')
+    root.insert(0, title)
     metadata = ET.SubElement(root, SVG + 'metadata')
     metadata.text = json.dumps({'source': 'GitHub GraphQL', 'fetched_at': fetched,
                                 'today': now.date().isoformat(),

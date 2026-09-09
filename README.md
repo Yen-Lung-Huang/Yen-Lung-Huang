@@ -15,11 +15,11 @@
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
   <!-- GitHub Streak -->
   <a href="https://github.com/Yen-Lung-Huang/github-readme-streak-stats">
-    <img alt="GitHub Streak" src="assets/readme-cards/streak-11069ab94b48c1a1.svg" style="max-width: 100%;" />
+    <img title="GitHub API checked: 2026-09-10 01:11:14+08:00" alt="GitHub Streak" src="assets/readme-cards/streak-d1d7ea3041da9549.svg" style="max-width: 100%;" />
   </a>
 
   <!-- Productive Time -->
   <a href="https://github.com/Yen-Lung-Huang/github-profile-summary-cards">
-    <img alt="Productive Time" src="assets/readme-cards/productive-time-animated-v2-2e1c848c0aa843d4.svg" style="width: 316px; max-width: 100%;" />
+    <img alt="Productive Time" src="assets/readme-cards/productive-time-animated-v2-2e1c848c0aa843d4.svg" width="316" style="width: 316px; max-width: 100%;" />
   </a>
 </div>

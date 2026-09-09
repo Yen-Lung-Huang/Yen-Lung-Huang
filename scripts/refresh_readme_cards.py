@@ -2,6 +2,7 @@
 
 import os
 import hashlib
+from html import escape
 from pathlib import Path
 import re
 import tempfile
@@ -165,6 +166,15 @@ def publish_versions(root):
         content, count = re.subn(pattern, 'assets/readme-cards/' + filename, content)
         if count != 1:
             raise ValueError('Expected exactly one README reference for ' + stem)
+        if name == 'streak':
+            title = ET.fromstring(data).find(SVG + 'title')
+            if title is not None and title.text:
+                # SVG titles are not reliably exposed when embedded as <img>.
+                # Put the tooltip on the HTML image as well.
+                def tooltip(match):
+                    tag = re.sub(r'\s+title="[^"]*"', '', match.group(0))
+                    return tag.replace('<img ', '<img title="' + escape(title.text, quote=True) + '" ', 1)
+                content = re.sub(r'<img\b[^>]*\balt="GitHub Streak"[^>]*>', tooltip, content)
         (directory / filename).write_bytes(data)
         for old in directory.glob(stem + '-*.svg'):
             if re.fullmatch(re.escape(stem) + r'-[0-9a-f]{16}\.svg', old.name) and old.name != filename:
