@@ -13,22 +13,17 @@ def card(width, height):
 class LayoutTests(unittest.TestCase):
     def test_sizes_follow_sources_and_cells_align(self):
         root = ET.fromstring(compose([card(100, 50), card(60, 40), card(110, 55), card(70, 60)], 2))
-        cells = root.findall(SVG + 'svg')
-        self.assertEqual(cells[0].get('x'), cells[2].get('x'))
-        self.assertEqual(cells[1].get('x'), cells[3].get('x'))
-        self.assertEqual(cells[0].get('y'), cells[1].get('y'))
-        self.assertEqual(cells[2].get('y'), cells[3].get('y'))
-        self.assertEqual(cells[0].get('width'), '110')
-        self.assertEqual(cells[1].get('width'), '70')
-        self.assertEqual(cells[0].get('height'), '50')
-        self.assertEqual(cells[2].get('height'), '60')
+        cells = root.findall(SVG + 'g')
+        self.assertEqual(cells[0].get('transform'), 'translate(0 0) scale(1.1 1)')
+        self.assertEqual(cells[1].get('transform'), 'translate(111.5 0) scale(1.16667 1.25)')
+        self.assertEqual(cells[2].get('transform'), 'translate(0 51.5) scale(1 1.09091)')
         self.assertEqual(len({e.get('id') for e in cells}), 4)
 
     def test_mobile_is_one_column(self):
         root = ET.fromstring(compose([card(100, 50)] * 4, 1))
-        cells = root.findall(SVG + 'svg')
-        self.assertEqual({e.get('x') for e in cells}, {'0'})
-        self.assertEqual(len({e.get('y') for e in cells}), 4)
+        cells = root.findall(SVG + 'g')
+        self.assertTrue(all(e.get('transform').startswith('translate(0 ') for e in cells))
+        self.assertEqual(len({e.get('transform') for e in cells}), 4)
 
     def test_publication_references_existing_versions_and_retains_tooltip(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -47,4 +42,4 @@ class LayoutTests(unittest.TestCase):
             (directory / 'streak.svg').write_bytes(card(120, 60))
             publish_layout(root)
             self.assertNotEqual(first, (root / 'README.md').read_text())
-            self.assertEqual(len(list(directory.glob('overview-*.svg'))), 2)
+            self.assertEqual(len(list(directory.glob('overview-*.svg'))), 4)

@@ -11,6 +11,7 @@ STEMS = ('github-stats', 'top-languages', 'streak', 'productive-time-animated-v2
 
 def scope_css(css, scope):
     """Scope selectors while preserving keyframes and nested media rules."""
+    css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
     result = []
     cursor = 0
     while cursor < len(css):
@@ -36,6 +37,10 @@ def scope_css(css, scope):
 
 
 def scoped_card(data, prefix):
+    source = data.decode('utf-8')
+    for name in set(re.findall(r'@keyframes\s+([\w-]+)', source)):
+        source = re.sub(r'(?<![\w-])' + re.escape(name) + r'(?![\w-])', prefix + '-' + name, source)
+    data = source.encode('utf-8')
     root = ET.fromstring(data)
     replacements = {e.get('id'): prefix + '-' + e.get('id') for e in root.iter() if e.get('id')}
     for element in root.iter():
@@ -66,6 +71,8 @@ def compose(cards, columns):
     rows = (len(cards) + columns - 1) // columns
     heights = [max(height for index, (_, height) in enumerate(sizes) if index // columns == row)
                for row in range(rows)]
+    if columns == 1:
+        heights = [height * widths[0] / width for width, height in sizes]
     gap = min(heights) * 0.03
     width = sum(widths) + gap * (columns - 1)
     height = sum(heights) + gap * (rows - 1)
@@ -75,12 +82,11 @@ def compose(cards, columns):
     for index, data in enumerate(cards):
         col, row = index % columns, index // columns
         child = scoped_card(data, f'card-{index}')
-        child.attrib.update({
-            'x': f'{sum(widths[:col]) + col * gap:g}',
-            'y': f'{sum(heights[:row]) + row * gap:g}',
-            'width': f'{widths[col]:g}', 'height': f'{heights[row]:g}',
-            'preserveAspectRatio': 'none',
-        })
+        child.tag = SVG + 'g'
+        for attr in ('width', 'height', 'viewBox'):
+            child.attrib.pop(attr, None)
+        x, y = sum(widths[:col]) + col * gap, sum(heights[:row]) + row * gap
+        child.set('transform', f'translate({x:g} {y:g}) scale({widths[col] / sizes[index][0]:g} {heights[row] / sizes[index][1]:g})')
         root.append(child)
     ET.register_namespace('', SVG[1:-1])
     return ET.tostring(root, encoding='utf-8')
@@ -95,9 +101,7 @@ def publish_layout(root):
         name = f'overview-{variant}-{hashlib.sha256(data).hexdigest()[:16]}.svg'
         (directory / name).write_bytes(data)
         paths[variant] = 'assets/readme-cards/' + name
-        for old in directory.glob(f'overview-{variant}-*.svg'):
-            if re.fullmatch(r'overview-' + variant + r'-[0-9a-f]{16}\.svg', old.name) and old.name != name:
-                old.unlink()
+        # Keep immutable versions: a cached README may still reference an old URL.
     title = ET.fromstring(cards[2]).find(SVG + 'title')
     tooltip = escape(title.text if title is not None else 'GitHub profile statistics', quote=True)
     # A picture element supports mobile stacking in GitHub's sanitized README.
