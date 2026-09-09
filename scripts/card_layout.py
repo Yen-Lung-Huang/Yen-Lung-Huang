@@ -1,6 +1,5 @@
 """Compose card grids from SVG dimensions, without README pixel sizes."""
 
-import base64
 import hashlib
 from html import escape
 import re
@@ -8,6 +7,52 @@ import xml.etree.ElementTree as ET
 
 SVG = '{http://www.w3.org/2000/svg}'
 STEMS = ('github-stats', 'top-languages', 'streak', 'productive-time-animated-v2')
+
+
+def scope_css(css, scope):
+    """Scope selectors while preserving keyframes and nested media rules."""
+    result = []
+    cursor = 0
+    while cursor < len(css):
+        opening = css.find('{', cursor)
+        if opening < 0:
+            result.append(css[cursor:])
+            break
+        prelude = css[cursor:opening].strip()
+        depth, closing = 1, opening + 1
+        while depth and closing < len(css):
+            depth += (css[closing] == '{') - (css[closing] == '}')
+            closing += 1
+        if depth:
+            raise ValueError('Unbalanced card stylesheet')
+        body = css[opening + 1:closing - 1]
+        if prelude.startswith('@media') or prelude.startswith('@supports'):
+            body = scope_css(body, scope)
+        elif not prelude.startswith('@'):
+            prelude = ', '.join(scope + ' ' + selector.strip() for selector in prelude.split(','))
+        result.append(prelude + '{' + body + '}')
+        cursor = closing
+    return '\n'.join(result)
+
+
+def scoped_card(data, prefix):
+    root = ET.fromstring(data)
+    replacements = {e.get('id'): prefix + '-' + e.get('id') for e in root.iter() if e.get('id')}
+    for element in root.iter():
+        if element.get('id'):
+            element.set('id', replacements[element.get('id')])
+        for key, value in list(element.attrib.items()):
+            if key != 'id':
+                for old, new in replacements.items():
+                    value = value.replace('#' + old, '#' + new)
+                element.set(key, value)
+        if element.tag == SVG + 'style':
+            css = element.text or ''
+            for old, new in replacements.items():
+                css = css.replace('#' + old, '#' + new)
+            element.text = scope_css(css, '#' + prefix)
+    root.set('id', prefix)
+    return root
 
 
 def compose(cards, columns):
@@ -29,13 +74,14 @@ def compose(cards, columns):
     ET.SubElement(root, SVG + 'title').text = 'GitHub statistics, languages, contribution streak and commit times'
     for index, data in enumerate(cards):
         col, row = index % columns, index // columns
-        ET.SubElement(root, SVG + 'image', {
+        child = scoped_card(data, f'card-{index}')
+        child.attrib.update({
             'x': f'{sum(widths[:col]) + col * gap:g}',
             'y': f'{sum(heights[:row]) + row * gap:g}',
             'width': f'{widths[col]:g}', 'height': f'{heights[row]:g}',
             'preserveAspectRatio': 'none',
-            'href': 'data:image/svg+xml;base64,' + base64.b64encode(data).decode(),
         })
+        root.append(child)
     ET.register_namespace('', SVG[1:-1])
     return ET.tostring(root, encoding='utf-8')
 

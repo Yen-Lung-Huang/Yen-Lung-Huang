@@ -13,7 +13,7 @@ def card(width, height):
 class LayoutTests(unittest.TestCase):
     def test_sizes_follow_sources_and_cells_align(self):
         root = ET.fromstring(compose([card(100, 50), card(60, 40), card(110, 55), card(70, 60)], 2))
-        cells = list(root.iter(SVG + 'image'))
+        cells = root.findall(SVG + 'svg')
         self.assertEqual(cells[0].get('x'), cells[2].get('x'))
         self.assertEqual(cells[1].get('x'), cells[3].get('x'))
         self.assertEqual(cells[0].get('y'), cells[1].get('y'))
@@ -22,11 +22,11 @@ class LayoutTests(unittest.TestCase):
         self.assertEqual(cells[1].get('width'), '70')
         self.assertEqual(cells[0].get('height'), '50')
         self.assertEqual(cells[2].get('height'), '60')
-        self.assertTrue(all(e.get('href').startswith('data:image/svg+xml;base64,') for e in cells))
+        self.assertEqual(len({e.get('id') for e in cells}), 4)
 
     def test_mobile_is_one_column(self):
         root = ET.fromstring(compose([card(100, 50)] * 4, 1))
-        cells = list(root.iter(SVG + 'image'))
+        cells = root.findall(SVG + 'svg')
         self.assertEqual({e.get('x') for e in cells}, {'0'})
         self.assertEqual(len({e.get('y') for e in cells}), 4)
 
