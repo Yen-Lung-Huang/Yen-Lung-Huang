@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="isolation: isolate" viewBox="0 0 478 186" width="478px" height="186px" direction="ltr">
-        <title>GitHub API checked: 2026-09-11 22:40:19+08:00</title><style>
+        <title>GitHub API checked: 2026-09-12 01:56:00+08:00</title><style>
             @keyframes currstreak {
                 0% { font-size: 3px; opacity: 0.2; }
                 80% { font-size: 34px; opacity: 1; }
@@ -56,7 +56,7 @@
 
 
                 <g transform="translate(239, 140.5)">
-                    <text x="0" y="21" stroke-width="0" text-anchor="middle" fill="#9E9E9E" stroke="none" font-family="&quot;Segoe UI&quot;, Ubuntu, sans-serif" font-weight="400" font-size="10px" font-style="normal" style="opacity: 0; animation: fadein 0.5s linear forwards 0.9s">Sep 7, 2026 - Sep 10, 2026</text>
+                    <text x="0" y="21" stroke-width="0" text-anchor="middle" fill="#9E9E9E" stroke="none" font-family="&quot;Segoe UI&quot;, Ubuntu, sans-serif" font-weight="400" font-size="10px" font-style="normal" style="opacity: 0; animation: fadein 0.5s linear forwards 0.9s">No active streak</text>
                 </g>
 
 
@@ -71,7 +71,7 @@
 
 
                 <g transform="translate(239, 43.5)">
-                    <text x="0" y="32" stroke-width="0" text-anchor="middle" fill="#FEFEFE" stroke="none" font-family="&quot;Segoe UI&quot;, Ubuntu, sans-serif" font-weight="700" font-size="28px" font-style="normal" style="animation: currstreak 0.6s linear forwards">4</text>
+                    <text x="0" y="32" stroke-width="0" text-anchor="middle" fill="#FEFEFE" stroke="none" font-family="&quot;Segoe UI&quot;, Ubuntu, sans-serif" font-weight="700" font-size="28px" font-style="normal" style="animation: currstreak 0.6s linear forwards">0</text>
                 </g>
 
             </g>
@@ -95,4 +95,4 @@
             </g>
 
         </g>
-    <metadata>{"source": "GitHub GraphQL", "fetched_at": "2026-09-11T22:40:19+08:00", "today": "2026-09-11", "recent_days": {"2026-09-04": 5, "2026-09-05": 4, "2026-09-06": 0, "2026-09-07": 13, "2026-09-08": 23, "2026-09-09": 21, "2026-09-10": 33, "2026-09-11": 0}}</metadata></svg>
+    <metadata>{"source": "GitHub GraphQL", "fetched_at": "2026-09-12T01:56:00+08:00", "today": "2026-09-12", "recent_days": {"2026-09-05": 4, "2026-09-06": 0, "2026-09-07": 13, "2026-09-08": 23, "2026-09-09": 21, "2026-09-10": 33, "2026-09-11": 0, "2026-09-12": 0}}</metadata></svg>
